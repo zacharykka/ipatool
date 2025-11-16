@@ -14,6 +14,7 @@ import (
 	"github.com/majd/ipatool/v2/pkg/http"
 	"github.com/majd/ipatool/v2/pkg/keychain"
 	"github.com/majd/ipatool/v2/pkg/log"
+	"github.com/majd/ipatool/v2/pkg/multiaccount"
 	"github.com/majd/ipatool/v2/pkg/util"
 	"github.com/majd/ipatool/v2/pkg/util/machine"
 	"github.com/majd/ipatool/v2/pkg/util/operatingsystem"
@@ -92,8 +93,10 @@ func newKeychain(machine machine.Machine, logger log.Logger, interactive bool) k
 			return password, nil
 		},
 	}))
+	// Wrap the base keychain so that keys can be separated per profile via IPATOOL_PROFILE.
+	base := keychain.New(keychain.Args{Keyring: ring})
 
-	return keychain.New(keychain.Args{Keyring: ring})
+	return multiaccount.NewProfileKeychain(base)
 }
 
 // initWithCommand initializes the dependencies of the command.

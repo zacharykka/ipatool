@@ -165,6 +165,33 @@ Global Flags:
 **Note:** the tool runs in interactive mode by default. Use the `--non-interactive` flag
 if running in an automated environment.
 
+### Multi-account usage (fork only)
+
+This fork adds simple multi-account support via the `IPATOOL_PROFILE` environment variable.
+
+- Without `IPATOOL_PROFILE` set, `ipatool` behaves exactly like upstream and uses a single
+  global account stored in the keychain.
+- When `IPATOOL_PROFILE` is set, account data is stored separately per profile.
+
+Examples:
+
+```shell
+# Use the default (global) account – compatible with upstream
+ipatool auth login --email ... --password ...
+ipatool download --app-id ...
+
+# Login and use a \"work\" profile
+IPATOOL_PROFILE=work ipatool auth login --email ... --password ...
+IPATOOL_PROFILE=work ipatool download --app-id ...
+
+# Login and use a \"personal\" profile
+IPATOOL_PROFILE=personal ipatool auth login --email ... --password ...
+IPATOOL_PROFILE=personal ipatool download --app-id ...
+```
+
+Each profile has its own credentials stored in the keychain, so you can switch
+accounts by changing `IPATOOL_PROFILE`.
+
 ## Compiling
 
 The tool can be compiled using the Go toolchain.
